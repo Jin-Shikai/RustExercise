@@ -1,3 +1,5 @@
+use rust_exercise::reverse_string::*;
+
 fn main() {
-    println!("Hello, world!");
+    println!("{}", reverse("abc"));
 }
