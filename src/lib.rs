@@ -62,3 +62,78 @@ pub mod gigasecond {
         assert_eq!(after(start_date), dt(2043, 1, 1, 1, 46, 40));
     }
 }
+
+pub mod clock {
+    #[derive(Debug, PartialEq, Eq)]
+    pub struct Clock {
+        hours: i32,
+        minutes: i32,
+    }
+
+    impl Clock {
+        pub fn new(hours: i32, minutes: i32) -> Self {
+            let mut my_hour = hours % 24;
+            if my_hour < 0 {
+                my_hour = 24 + my_hour;
+            }
+            let carry = minutes / 60;
+            my_hour = (my_hour + carry) % 24;
+            let mut my_minutes = minutes % 60;
+            if my_minutes < 0 {
+                my_hour = my_hour - 1;
+                if my_hour < 0 {
+                    my_hour = 24 + my_hour;
+                }
+                my_minutes = 60 + my_minutes;
+            }
+            if my_hour < 0 {
+                my_hour = 24 + my_hour;
+            }
+            Self {
+                hours: my_hour % 24,
+                minutes: my_minutes % 60,
+            }
+        }
+
+        pub fn add_minutes(&self, minutes: i32) -> Self {
+            let minutes = self.minutes + minutes;
+            let carry = minutes / 60;
+            let mut my_minutes = minutes % 60;
+            let mut my_hour = (self.hours + carry) % 24;
+            if my_minutes < 0 {
+                my_hour = my_hour - 1;
+                if my_hour < 0 {
+                    my_hour = 24 + my_hour;
+                }
+                my_minutes = 60 + my_minutes;
+            }
+            if my_hour < 0 {
+                my_hour = 24 + my_hour;
+            }
+            Self {
+                hours: my_hour,
+                minutes: my_minutes,
+            }
+        }
+
+        pub fn to_string(&self) -> String {
+            format!("{:0>2}:{:0>2}", self.hours, self.minutes)
+        }
+
+        #[cfg(test)]
+        fn test_on_the_hour() {
+            assert_eq!(Clock::new(8, 0).to_string(), "08:00");
+        }
+
+        #[cfg(test)]
+        fn test_past_the_hour() {
+            assert_eq!(Clock::new(11, 9).to_string(), "11:09");
+        }
+    }
+
+    // impl PartialEq for Clock {
+    //     fn eq(&self, other: &Self) -> bool {
+    //         self.hours == other.hours && self.minutes == other.minutes
+    //     }
+    // }
+}
