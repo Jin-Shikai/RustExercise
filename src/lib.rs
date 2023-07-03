@@ -130,10 +130,4 @@ pub mod clock {
             assert_eq!(Clock::new(11, 9).to_string(), "11:09");
         }
     }
-
-    // impl PartialEq for Clock {
-    //     fn eq(&self, other: &Self) -> bool {
-    //         self.hours == other.hours && self.minutes == other.minutes
-    //     }
-    // }
 }
