@@ -131,3 +131,73 @@ pub mod clock {
         }
     }
 }
+
+pub mod anagram {
+    use std::collections::HashSet;
+
+    pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
+        // unimplemented!(
+        //     "For the '{word}' word find anagrams among the following words: {possible_anagrams:?}"
+        // );
+        let mut res = HashSet::new();
+        let word_self = word.to_lowercase().chars().clone().collect::<Vec<_>>();
+        let mut sorted_word = word.to_lowercase().chars().clone().collect::<Vec<_>>();
+        sorted_word.sort_unstable();
+        for possible_word in possible_anagrams {
+            let mut sorted_option = possible_word
+                .to_lowercase()
+                .chars()
+                .clone()
+                .collect::<Vec<_>>();
+            let unsorted_option = sorted_option.clone();
+            sorted_option.sort_unstable();
+            dbg!(&sorted_word);
+            dbg!(&sorted_option);
+            if sorted_option == sorted_word {
+                if word_self == unsorted_option {
+                    continue;
+                }
+                res.insert(*possible_word);
+            }
+        }
+        dbg!(&res);
+        res
+    }
+
+    fn process_anagram_case(word: &str, inputs: &[&str], expected: &[&str]) {
+        let result = anagrams_for(word, inputs);
+
+        let expected: HashSet<&str> = expected.iter().cloned().collect();
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_multiple_anagrams() {
+        let word = "allergy";
+
+        let inputs = [
+            "gallery",
+            "ballerina",
+            "regally",
+            "clergy",
+            "largely",
+            "leading",
+        ];
+
+        let outputs = vec!["gallery", "regally", "largely"];
+
+        process_anagram_case(word, &inputs, &outputs);
+    }
+
+    #[test]
+    fn test_case_insensitive_anagrams() {
+        let word = "Orchestra";
+
+        let inputs = ["cashregister", "Carthorse", "radishes"];
+
+        let outputs = vec!["Carthorse"];
+
+        process_anagram_case(word, &inputs, &outputs);
+    }
+}
