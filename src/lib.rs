@@ -136,31 +136,21 @@ pub mod anagram {
     use std::collections::HashSet;
 
     pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
-        // unimplemented!(
-        //     "For the '{word}' word find anagrams among the following words: {possible_anagrams:?}"
-        // );
-        let mut res = HashSet::new();
-        let word_self = word.to_lowercase().chars().clone().collect::<Vec<_>>();
-        let mut sorted_word = word.to_lowercase().chars().clone().collect::<Vec<_>>();
+        let mut res: HashSet<&'a str> = HashSet::new();
+        let low_case_word = word.to_lowercase();
+        let mut sorted_word: Vec<char> = low_case_word.chars().collect();
         sorted_word.sort_unstable();
-        for possible_word in possible_anagrams {
-            let mut sorted_option = possible_word
-                .to_lowercase()
-                .chars()
-                .clone()
-                .collect::<Vec<_>>();
-            let unsorted_option = sorted_option.clone();
-            sorted_option.sort_unstable();
-            dbg!(&sorted_word);
-            dbg!(&sorted_option);
-            if sorted_option == sorted_word {
-                if word_self == unsorted_option {
-                    continue;
-                }
-                res.insert(*possible_word);
+        for s in possible_anagrams {
+            let low_case_s = s.to_lowercase();
+            if low_case_s == low_case_word {
+                continue;
+            }
+            let mut sorted_s: Vec<char> = low_case_s.chars().collect();
+            sorted_s.sort_unstable();
+            if sorted_s == sorted_word {
+                res.insert(s);
             }
         }
-        dbg!(&res);
         res
     }
 
